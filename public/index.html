@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF CONFIG+</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#000;
+      color:white;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
+    }
+
+    /* LOGIN */
+
+    .login-screen{
+      width:350px;
+      text-align:center;
+    }
+
+    .login-title{
+      color:#ff0000;
+      font-size:42px;
+      font-weight:bold;
+      margin-bottom:35px;
+      text-shadow:0 0 15px red;
+    }
+
+    .login-input{
+      width:100%;
+      padding:16px;
+      border:1px solid #666;
+      border-radius:12px;
+      background:#080808;
+      color:white;
+      outline:none;
+      margin-bottom:15px;
+      font-size:15px;
+    }
+
+    .login-input::placeholder{
+      color:#777;
+    }
+
+    .login-btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#ff0000;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+      font-size:16px;
+      margin-top:10px;
+    }
+
+    .login-btn:hover{
+      transform:scale(1.03);
+      box-shadow:0 0 20px red;
+    }
+
+    .buy-btn{
+      background:#1d0000;
+      border:1px solid red;
+    }
+
+    /* PAINEL */
+
+    .panel{
+      display:none;
+    }
+
+    .card{
+      width:420px;
+      background:#120000;
+      border-radius:25px;
+      padding:30px;
+      box-shadow:0 0 35px red;
+    }
+
+    .title{
+      text-align:center;
+      color:#ff1a1a;
+      font-size:28px;
+      font-weight:bold;
+      margin-bottom:25px;
+    }
+
+    .option{
+      background:#1d0000;
+      padding:18px;
+      border-radius:14px;
+      margin-bottom:15px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:18px;
+    }
+
+    .switch{
+      position:relative;
+      width:50px;
+      height:26px;
+    }
+
+    .switch input{
+      opacity:0;
+      width:0;
+      height:0;
+    }
+
+    .slider{
+      position:absolute;
+      cursor:pointer;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background-color:#444;
+      transition:.4s;
+      border-radius:30px;
+    }
+
+    .slider:before{
+      position:absolute;
+      content:"";
+      height:20px;
+      width:20px;
+      left:3px;
+      bottom:3px;
+      background-color:white;
+      transition:.4s;
+      border-radius:50%;
+    }
+
+    input:checked + .slider{
+      background-color:#ff0000;
+    }
+
+    input:checked + .slider:before{
+      transform:translateX(24px);
+    }
+
+    .btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:14px;
+      background:#ff1111;
+      color:white;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:15px;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      transform:scale(1.03);
+      background:#ff2e2e;
+    }
+
+    .footer{
+      text-align:center;
+      margin-top:20px;
+      color:#ff3a3a;
+      font-size:14px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+
+  <div class="login-screen" id="loginScreen">
+
+    <div class="login-title">
+      FF CONFIG+
+    </div>
+
+    <input 
+      type="text"
+      id="keyInput"
+      class="login-input"
+      placeholder="Digite sua Key"
+    >
+
+    <button class="login-btn" onclick="entrar()">
+      ENTRAR
+    </button>
+
+    <button class="login-btn buy-btn" onclick="comprarKey()">
+      COMPRAR KEY
+    </button>
+
+  </div>
+
+  <!-- PAINEL -->
+
+  <div class="panel" id="panel">
+
+    <div class="card">
+
+      <div class="title">
+        FF CONFIG+
+      </div>
+
+      <div class="option">
+        Headtracker
+
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="option">
+        Aimbot
+
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="option">
+        Aumentar Precisão
+
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <button class="btn">
+        ATIVAR CONFIG
+      </button>
+
+      <div class="footer">
+        FF CONFIG+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    function entrar(){
+
+      const key =
+        document.getElementById("keyInput").value;
+
+      const keyCorreta = "FFCONFIG123";
+
+      if(key !== keyCorreta){
+        alert("Key inválida");
+        return;
+      }
+
+      document.getElementById("loginScreen")
+        .style.display = "none";
+
+      document.getElementById("panel")
+        .style.display = "block";
+    }
+
+    function comprarKey(){
+      window.location.href = "/checkout.html";
+    }
+
+  </script>
+
+</body>
+</html>

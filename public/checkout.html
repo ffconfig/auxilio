@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprar Key - FF CONFIG+</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#000;
+      color:white;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .card{
+      width:420px;
+      background:#120000;
+      padding:30px;
+      border-radius:25px;
+      box-shadow:0 0 35px red;
+    }
+
+    .title{
+      text-align:center;
+      color:#ff0000;
+      font-size:30px;
+      margin-bottom:25px;
+      font-weight:bold;
+    }
+
+    input{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      margin-bottom:15px;
+      background:#1d0000;
+      color:white;
+      outline:none;
+    }
+
+    .btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#ff0000;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:16px;
+    }
+
+    .btn:hover{
+      box-shadow:0 0 20px red;
+    }
+
+    img{
+      width:220px;
+      margin:auto;
+      display:block;
+      margin-top:20px;
+      border-radius:10px;
+    }
+
+    .pix{
+      background:#1d0000;
+      padding:12px;
+      border-radius:12px;
+      margin-top:15px;
+      word-break:break-all;
+      font-size:12px;
+    }
+
+    .status{
+      margin-top:15px;
+      text-align:center;
+      font-weight:bold;
+      color:#00ff66;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <div class="title">
+      COMPRAR KEY
+    </div>
+
+    <input
+      type="text"
+      id="nome"
+      placeholder="Seu nome"
+    >
+
+    <input
+      type="text"
+      id="cpf"
+      placeholder="Seu CPF"
+    >
+
+    <button class="btn" onclick="gerarPix()">
+      PAGAR COM PIX
+    </button>
+
+    <div id="pixArea"></div>
+
+  </div>
+
+<script>
+
+let polling = null;
+
+async function gerarPix(){
+
+  const nome =
+    document.getElementById("nome").value;
+
+  const cpf =
+    document.getElementById("cpf").value;
+
+  const response = await fetch("/criar-pix",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      amount: 9.99,
+      payerName:nome,
+      payerDocument:cpf.replace(/\D/g,''),
+      description:"FF CONFIG+ KEY",
+      externalId:"ff_" + Date.now()
+    })
+  });
+
+  const data = await response.json();
+
+  if(!data.success){
+    alert("Erro ao gerar PIX");
+    console.log(data);
+    return;
+  }
+
+  document.getElementById("pixArea").innerHTML = `
+  
+    <img src="${data.qrCodeBase64}">
+
+    <div class="pix" id="pixCode">
+      ${data.copyPaste}
+    </div>
+
+    <button class="btn" onclick="copiarPix()">
+      COPIAR PIX
+    </button>
+
+    <div class="status" id="status">
+      Aguardando pagamento...
+    </div>
+
+  `;
+
+  iniciarPolling(data.transactionId);
+}
+
+function copiarPix(){
+
+  const texto =
+    document.getElementById("pixCode").innerText;
+
+  navigator.clipboard.writeText(texto);
+
+  alert("PIX copiado!");
+}
+
+function iniciarPolling(transactionId){
+
+  polling = setInterval(async ()=>{
+
+    const response = await fetch(
+      `/status?transactionId=${transactionId}`
+    );
+
+    const data = await response.json();
+
+    const status =
+      data?.data?.status;
+
+    const statusDiv =
+      document.getElementById("status");
+
+    if(status === "paid"){
+
+      statusDiv.innerHTML =
+        "✅ PAGAMENTO CONFIRMADO";
+
+      clearInterval(polling);
+
+      setTimeout(()=>{
+
+        window.location.href = "/";
+
+      },3000);
+    }
+
+    if(status === "expired"){
+
+      statusDiv.innerHTML =
+        "⌛ PIX EXPIRADO";
+
+      clearInterval(polling);
+    }
+
+    if(status === "failed"){
+
+      statusDiv.innerHTML =
+        "❌ PAGAMENTO FALHOU";
+
+      clearInterval(polling);
+    }
+
+  },4000);
+}
+
+</script>
+
+</body>
+</html>
