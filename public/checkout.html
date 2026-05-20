@@ -201,20 +201,7 @@ function iniciarPolling(transactionId){
     const statusDiv =
       document.getElementById("status");
 
-    if(status === "paid"){
-
-      statusDiv.innerHTML =
-        "✅ PAGAMENTO CONFIRMADO";
-
-      clearInterval(polling);
-
-      setTimeout(()=>{
-
-        window.location.href = "/";
-
-      },3000);
-    }
-
+    
     if(status === "expired"){
 
       statusDiv.innerHTML =
